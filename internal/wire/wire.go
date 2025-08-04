@@ -1,0 +1,69 @@
+//go:build wireinject
+// +build wireinject
+
+package wire
+
+import (
+	"context"
+
+	"github.com/google/wire"
+
+	"go-transport-prac/internal/config"
+	"go-transport-prac/internal/logger"
+)
+
+// Application represents the main application
+type Application struct {
+	Config *config.Config
+	Logger *logger.Logger
+}
+
+// NewApplication creates a new application instance
+func NewApplication(cfg *config.Config, log *logger.Logger) *Application {
+	return &Application{
+		Config: cfg,
+		Logger: log,
+	}
+}
+
+// Start starts the application
+func (app *Application) Start(ctx context.Context) error {
+	app.Logger.Info("Starting application")
+	return nil
+}
+
+// Stop stops the application gracefully
+func (app *Application) Stop(ctx context.Context) error {
+	app.Logger.Info("Stopping application")
+	return nil
+}
+
+// ProviderSet is the Wire provider set for basic infrastructure
+var ProviderSet = wire.NewSet(
+	ProvideConfig,
+	ProvideLogger,
+	NewApplication,
+)
+
+// ProvideConfig provides configuration
+func ProvideConfig() (*config.Config, error) {
+	return config.Load()
+}
+
+// ProvideLogger provides logger based on configuration
+func ProvideLogger(cfg *config.Config) (*logger.Logger, error) {
+	loggerConfig := logger.Config{
+		Level:       cfg.Logging.Level,
+		Format:      cfg.Logging.Format,
+		OutputPaths: cfg.Logging.OutputPaths,
+		Development: cfg.Logging.Development,
+	}
+
+	return logger.New(loggerConfig)
+}
+
+// InitializeApplication initializes the application with all dependencies
+func InitializeApplication() (*Application, error) {
+	wire.Build(ProviderSet)
+	return &Application{}, nil
+}

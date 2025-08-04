@@ -4,24 +4,24 @@
 
 ### Task 1.1: Project Setup
 
-- [ ] Initialize Go module with `go mod init go-transport-prac`
-- [ ] Create directory structure as per design document
-- [ ] Create basic Makefile for common operations
-- [ ] Set up Docker development environment
-- [ ] Configure basic CI/CD pipeline
-- [ ] Document development environment setup
+- [x] Initialize Go module with `go mod init go-transport-prac`
+- [x] Create directory structure as per design document
+- [x] Create basic Makefile for common operations
+- [x] Set up Docker development environment
+- [ ] Configure basic CI/CD pipeline (Skipped as requested)
+- [x] Document development environment setup
 
 **Dependencies**: None  
 **Estimated Effort**: 1-2 hours
 
 ### Task 1.2: Common Infrastructure
 
-- [ ] Implement configuration management package
-- [ ] Set up logging infrastructure with zap
-- [ ] Define error handling patterns and utilities
-- [ ] Create testing utilities and helpers
-- [ ] Implement shared interfaces and types
-- [ ] Add dependency injection framework
+- [x] Implement configuration management package
+- [x] Set up logging infrastructure with zap
+- [x] Define error handling patterns and utilities
+- [x] Create testing utilities and helpers
+- [x] Implement shared interfaces and types
+- [x] Add dependency injection framework (using Wire)
 
 **Dependencies**: Task 1.1 completed  
 **Estimated Effort**: 4-6 hours
@@ -30,13 +30,13 @@
 
 ### Task 2.1: JSON Schema Implementation
 
-- [ ] Install and configure `github.com/santhosh-tekuri/jsonschema/v5`
-- [ ] Create schema definition utilities
-- [ ] Implement validation middleware for HTTP APIs
-- [ ] Build complex nested object validation examples
-- [ ] Add comprehensive error reporting and handling
-- [ ] Write unit tests (target >90% coverage)
-- [ ] Create documentation with practical examples
+- [x] Install and configure `github.com/xeipuuv/gojsonschema` (switched from v6 due to API compatibility)
+- [x] Create schema definition utilities
+- [x] Implement validation middleware for HTTP APIs
+- [x] Build complex nested object validation examples
+- [x] Add comprehensive error reporting and handling
+- [x] Write unit tests (target >90% coverage)
+- [x] Create documentation with practical examples
 
 **Dependencies**: Task 1.2 completed  
 **Estimated Effort**: 6-8 hours

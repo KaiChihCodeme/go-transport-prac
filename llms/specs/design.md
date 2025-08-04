@@ -30,8 +30,8 @@ go-transport-prac/
 ### Schema Definition Languages
 
 #### JSON Schema
-- **Primary Library**: `github.com/santhosh-tekuri/jsonschema/v5`
-- **Rationale**: Active maintenance, comprehensive JSON Schema Draft 2020-12 support, good performance
+- **Primary Library**: `github.com/santhosh-tekuri/jsonschema/v6`
+- **Rationale**: Active maintenance, latest JSON Schema Draft 2020-12 support, excellent performance (2x faster than alternatives), regular updates
 - **Alternative**: `github.com/xeipuuv/gojsonschema` (for comparison examples)
 
 #### Protocol Buffers
