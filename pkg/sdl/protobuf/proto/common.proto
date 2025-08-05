@@ -1,0 +1,127 @@
+syntax = "proto3";
+
+package common;
+
+option go_package = "go-transport-prac/pkg/sdl/protobuf/gen/common";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+
+// Generic response wrapper
+message Response {
+  bool success = 1;
+  string message = 2;
+  int32 code = 3;
+  google.protobuf.Any data = 4;
+  repeated Error errors = 5;
+  Metadata metadata = 6;
+}
+
+// Error message structure
+message Error {
+  string field = 1;
+  string message = 2;
+  string code = 3;
+}
+
+// Metadata for responses
+message Metadata {
+  google.protobuf.Timestamp timestamp = 1;
+  string request_id = 2;
+  string version = 3;
+  map<string, string> headers = 4;
+}
+
+// Pagination support
+message PaginationRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  string sort_by = 3;
+  SortOrder sort_order = 4;
+}
+
+message PaginationResponse {
+  int32 page = 1;
+  int32 page_size = 2;
+  int32 total_count = 3;
+  int32 total_pages = 4;
+  bool has_next = 5;
+  bool has_previous = 6;
+}
+
+enum SortOrder {
+  SORT_ORDER_UNSPECIFIED = 0;
+  SORT_ORDER_ASC = 1;
+  SORT_ORDER_DESC = 2;
+}
+
+// Health check messages
+message HealthRequest {
+  string service = 1;
+}
+
+message HealthResponse {
+  HealthStatus status = 1;
+  string message = 2;
+  map<string, string> details = 3;
+  google.protobuf.Timestamp timestamp = 4;
+}
+
+enum HealthStatus {
+  HEALTH_STATUS_UNSPECIFIED = 0;
+  HEALTH_STATUS_HEALTHY = 1;
+  HEALTH_STATUS_UNHEALTHY = 2;
+  HEALTH_STATUS_DEGRADED = 3;
+}
+
+// Audit trail for tracking changes
+message AuditLog {
+  string entity_type = 1;
+  string entity_id = 2;
+  string action = 3;
+  uint64 user_id = 4;
+  google.protobuf.Any old_values = 5;
+  google.protobuf.Any new_values = 6;
+  google.protobuf.Timestamp timestamp = 7;
+  string ip_address = 8;
+  string user_agent = 9;
+}
+
+// Configuration message
+message Config {
+  string key = 1;
+  string value = 2;
+  string description = 3;
+  ConfigType type = 4;
+  bool is_secret = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+enum ConfigType {
+  CONFIG_TYPE_UNSPECIFIED = 0;
+  CONFIG_TYPE_STRING = 1;
+  CONFIG_TYPE_INTEGER = 2;
+  CONFIG_TYPE_BOOLEAN = 3;
+  CONFIG_TYPE_JSON = 4;
+}
+
+// Notification messages
+message Notification {
+  string id = 1;
+  string recipient = 2;
+  NotificationType type = 3;
+  string title = 4;
+  string message = 5;
+  map<string, string> data = 6;
+  bool read = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp read_at = 9;
+}
+
+enum NotificationType {
+  NOTIFICATION_TYPE_UNSPECIFIED = 0;
+  NOTIFICATION_TYPE_INFO = 1;
+  NOTIFICATION_TYPE_WARNING = 2;
+  NOTIFICATION_TYPE_ERROR = 3;
+  NOTIFICATION_TYPE_SUCCESS = 4;
+}

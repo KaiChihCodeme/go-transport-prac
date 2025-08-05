@@ -1,0 +1,125 @@
+syntax = "proto3";
+
+package product;
+
+option go_package = "go-transport-prac/pkg/sdl/protobuf/gen/product";
+
+import "google/protobuf/timestamp.proto";
+
+// Product represents a product entity
+message Product {
+  uint64 id = 1;
+  string name = 2;
+  string description = 3;
+  string sku = 4;
+  Price price = 5;
+  Inventory inventory = 6;
+  repeated string categories = 7;
+  repeated string tags = 8;
+  ProductStatus status = 9;
+  Specifications specifications = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+}
+
+// ProductStatus enum defines possible product states
+enum ProductStatus {
+  PRODUCT_STATUS_UNSPECIFIED = 0;
+  PRODUCT_STATUS_ACTIVE = 1;
+  PRODUCT_STATUS_INACTIVE = 2;
+  PRODUCT_STATUS_OUT_OF_STOCK = 3;
+  PRODUCT_STATUS_DISCONTINUED = 4;
+}
+
+// Price contains pricing information
+message Price {
+  string currency = 1;
+  int64 amount_cents = 2;  // Price in cents to avoid floating point issues
+  Price original_price = 3;  // For sale items
+  float discount_percentage = 4;
+}
+
+// Inventory tracks product availability
+message Inventory {
+  int32 quantity = 1;
+  int32 reserved = 2;
+  int32 available = 3;
+  bool track_inventory = 4;
+  int32 reorder_level = 5;
+  int32 max_stock = 6;
+}
+
+// Specifications for flexible product attributes
+message Specifications {
+  map<string, string> attributes = 1;
+  Dimensions dimensions = 2;
+  Weight weight = 3;
+}
+
+message Dimensions {
+  float length = 1;
+  float width = 2;
+  float height = 3;
+  string unit = 4;  // cm, in, etc.
+}
+
+message Weight {
+  float value = 1;
+  string unit = 2;  // kg, lb, etc.
+}
+
+// Request messages
+message CreateProductRequest {
+  string name = 1;
+  string description = 2;
+  string sku = 3;
+  Price price = 4;
+  Inventory inventory = 5;
+  repeated string categories = 6;
+  repeated string tags = 7;
+  Specifications specifications = 8;
+}
+
+message UpdateProductRequest {
+  uint64 id = 1;
+  string name = 2;
+  string description = 3;
+  Price price = 4;
+  Inventory inventory = 5;
+  repeated string categories = 6;
+  repeated string tags = 7;
+  Specifications specifications = 8;
+}
+
+message GetProductRequest {
+  uint64 id = 1;
+}
+
+message SearchProductsRequest {
+  string query = 1;
+  repeated string categories = 2;
+  PriceRange price_range = 3;
+  ProductStatus status = 4;
+  int32 page = 5;
+  int32 page_size = 6;
+}
+
+message PriceRange {
+  int64 min_amount_cents = 1;
+  int64 max_amount_cents = 2;
+  string currency = 3;
+}
+
+// Response messages
+message ProductResponse {
+  Product product = 1;
+  bool success = 2;
+  string message = 3;
+}
+
+message ProductsResponse {
+  repeated Product products = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}

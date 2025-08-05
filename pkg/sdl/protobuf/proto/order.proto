@@ -1,0 +1,147 @@
+syntax = "proto3";
+
+package order;
+
+option go_package = "go-transport-prac/pkg/sdl/protobuf/gen/order";
+
+import "google/protobuf/timestamp.proto";
+import "user.proto";
+import "product.proto";
+
+// Order represents an order entity
+message Order {
+  uint64 id = 1;
+  uint64 user_id = 2;
+  string order_number = 3;
+  OrderStatus status = 4;
+  repeated OrderItem items = 5;
+  OrderSummary summary = 6;
+  ShippingInfo shipping = 7;
+  PaymentInfo payment = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+  google.protobuf.Timestamp shipped_at = 11;
+  google.protobuf.Timestamp delivered_at = 12;
+}
+
+// OrderStatus enum defines possible order states
+enum OrderStatus {
+  ORDER_STATUS_UNSPECIFIED = 0;
+  ORDER_STATUS_PENDING = 1;
+  ORDER_STATUS_CONFIRMED = 2;
+  ORDER_STATUS_PROCESSING = 3;
+  ORDER_STATUS_SHIPPED = 4;
+  ORDER_STATUS_DELIVERED = 5;
+  ORDER_STATUS_CANCELLED = 6;
+  ORDER_STATUS_REFUNDED = 7;
+}
+
+// OrderItem represents an item in an order
+message OrderItem {
+  uint64 product_id = 1;
+  string product_name = 2;
+  string product_sku = 3;
+  int32 quantity = 4;
+  product.Price unit_price = 5;
+  product.Price total_price = 6;
+  map<string, string> product_variant = 7;  // size, color, etc.
+}
+
+// OrderSummary contains order totals
+message OrderSummary {
+  product.Price subtotal = 1;
+  product.Price tax = 2;
+  product.Price shipping_cost = 3;
+  product.Price discount = 4;
+  product.Price total = 5;
+  int32 total_items = 6;
+}
+
+// ShippingInfo contains shipping details
+message ShippingInfo {
+  user.Address address = 1;
+  string method = 2;  // standard, express, overnight
+  string tracking_number = 3;
+  string carrier = 4;  // ups, fedex, usps
+  product.Price cost = 5;
+  google.protobuf.Timestamp estimated_delivery = 6;
+}
+
+// PaymentInfo contains payment details
+message PaymentInfo {
+  string method = 1;  // credit_card, paypal, apple_pay, etc.
+  PaymentStatus status = 2;
+  string transaction_id = 3;
+  product.Price amount = 4;
+  google.protobuf.Timestamp processed_at = 5;
+}
+
+enum PaymentStatus {
+  PAYMENT_STATUS_UNSPECIFIED = 0;
+  PAYMENT_STATUS_PENDING = 1;
+  PAYMENT_STATUS_AUTHORIZED = 2;
+  PAYMENT_STATUS_CAPTURED = 3;
+  PAYMENT_STATUS_FAILED = 4;
+  PAYMENT_STATUS_REFUNDED = 5;
+}
+
+// Request messages
+message CreateOrderRequest {
+  uint64 user_id = 1;
+  repeated OrderItem items = 2;
+  ShippingInfo shipping = 3;
+  PaymentInfo payment = 4;
+}
+
+message UpdateOrderStatusRequest {
+  uint64 id = 1;
+  OrderStatus status = 2;
+  string tracking_number = 3;
+}
+
+message GetOrderRequest {
+  uint64 id = 1;
+}
+
+message GetOrdersByUserRequest {
+  uint64 user_id = 1;
+  OrderStatus status = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message CancelOrderRequest {
+  uint64 id = 1;
+  string reason = 2;
+}
+
+// Response messages
+message OrderResponse {
+  Order order = 1;
+  bool success = 2;
+  string message = 3;
+}
+
+message OrdersResponse {
+  repeated Order orders = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// Event messages for event-driven architecture
+message OrderEvent {
+  uint64 order_id = 1;
+  OrderEventType event_type = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  map<string, string> metadata = 4;
+}
+
+enum OrderEventType {
+  ORDER_EVENT_TYPE_UNSPECIFIED = 0;
+  ORDER_EVENT_TYPE_CREATED = 1;
+  ORDER_EVENT_TYPE_UPDATED = 2;
+  ORDER_EVENT_TYPE_CANCELLED = 3;
+  ORDER_EVENT_TYPE_SHIPPED = 4;
+  ORDER_EVENT_TYPE_DELIVERED = 5;
+}

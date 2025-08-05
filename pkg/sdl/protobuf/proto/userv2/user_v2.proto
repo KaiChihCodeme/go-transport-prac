@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package userv2;
+
+option go_package = "go-transport-prac/pkg/sdl/protobuf/gen/userv2";
+
+import "google/protobuf/timestamp.proto";
+
+// UserV2 - Extended version with new fields for backward compatibility demo
+message UserV2 {
+  uint64 id = 1;
+  string email = 2;
+  string name = 3;
+  UserStatus status = 4;
+  Profile profile = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  
+  // New fields added in v2 (backward compatible)
+  string username = 8;            // New required-like field
+  bool email_verified = 9;        // New boolean field
+  repeated string roles = 10;     // New repeated field
+  UserPreferences preferences = 11; // New nested object
+  reserved 12;                    // Reserved field number for future use
+  string avatar_url = 13;         // Another new field
+}
+
+// UserStatus enum (unchanged - compatible)
+enum UserStatus {
+  USER_STATUS_UNSPECIFIED = 0;
+  USER_STATUS_ACTIVE = 1;
+  USER_STATUS_INACTIVE = 2;
+  USER_STATUS_SUSPENDED = 3;
+  USER_STATUS_DELETED = 4;
+  // New status added in v2
+  USER_STATUS_PENDING_VERIFICATION = 5;
+}
+
+// Profile extended in v2 (backward compatible)
+message Profile {
+  string first_name = 1;
+  string last_name = 2;
+  string phone = 3;
+  Address address = 4;
+  repeated string interests = 5;
+  map<string, string> metadata = 6;
+  
+  // New fields in v2
+  string bio = 7;                 // New optional field
+  google.protobuf.Timestamp birth_date = 8;  // New timestamp field
+}
+
+// Address (unchanged - compatible)
+message Address {
+  string street = 1;
+  string city = 2;
+  string state = 3;
+  string postal_code = 4;
+  string country = 5;
+}
+
+// New message type in v2
+message UserPreferences {
+  string language = 1;
+  string timezone = 2;
+  bool marketing_emails = 3;
+  bool push_notifications = 4;
+  Theme theme = 5;
+}
+
+// New enum in v2
+enum Theme {
+  THEME_UNSPECIFIED = 0;
+  THEME_LIGHT = 1;
+  THEME_DARK = 2;
+  THEME_AUTO = 3;
+}

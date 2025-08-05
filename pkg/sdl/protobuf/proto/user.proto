@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "go-transport-prac/pkg/sdl/protobuf/gen/user";
+
+import "google/protobuf/timestamp.proto";
+
+// User represents a user entity
+message User {
+  uint64 id = 1;
+  string email = 2;
+  string name = 3;
+  UserStatus status = 4;
+  Profile profile = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+// UserStatus enum defines possible user states
+enum UserStatus {
+  USER_STATUS_UNSPECIFIED = 0;
+  USER_STATUS_ACTIVE = 1;
+  USER_STATUS_INACTIVE = 2;
+  USER_STATUS_SUSPENDED = 3;
+  USER_STATUS_DELETED = 4;
+}
+
+// Profile contains additional user information
+message Profile {
+  string first_name = 1;
+  string last_name = 2;
+  string phone = 3;
+  Address address = 4;
+  repeated string interests = 5;
+  map<string, string> metadata = 6;
+}
+
+// Address represents a physical address
+message Address {
+  string street = 1;
+  string city = 2;
+  string state = 3;
+  string postal_code = 4;
+  string country = 5;
+}
+
+// UserRequest for creating or updating users
+message CreateUserRequest {
+  string email = 1;
+  string name = 2;
+  Profile profile = 3;
+}
+
+message UpdateUserRequest {
+  uint64 id = 1;
+  string name = 2;
+  Profile profile = 3;
+}
+
+message GetUserRequest {
+  uint64 id = 1;
+}
+
+message DeleteUserRequest {
+  uint64 id = 1;
+}
+
+// UserResponse messages
+message UserResponse {
+  User user = 1;
+  bool success = 2;
+  string message = 3;
+}
+
+message UsersResponse {
+  repeated User users = 1;
+  int32 total_count = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
