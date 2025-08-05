@@ -1,0 +1,150 @@
+{
+  "type": "record",
+  "name": "Product",
+  "namespace": "com.example.avro",
+  "doc": "Product entity for Avro serialization",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long",
+      "doc": "Unique product identifier"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "doc": "Product name"
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "doc": "Product description"
+    },
+    {
+      "name": "sku",
+      "type": "string",
+      "doc": "Stock keeping unit"
+    },
+    {
+      "name": "price",
+      "type": {
+        "type": "record",
+        "name": "Price",
+        "fields": [
+          {
+            "name": "currency",
+            "type": "string",
+            "doc": "Currency code (USD, EUR, etc.)"
+          },
+          {
+            "name": "amountCents",
+            "type": "long",
+            "doc": "Price in cents to avoid floating point issues"
+          },
+          {
+            "name": "discountPercentage",
+            "type": ["null", "float"],
+            "default": null,
+            "doc": "Discount percentage if applicable"
+          }
+        ]
+      },
+      "doc": "Product pricing information"
+    },
+    {
+      "name": "inventory",
+      "type": {
+        "type": "record",
+        "name": "Inventory",
+        "fields": [
+          {
+            "name": "quantity",
+            "type": "int",
+            "doc": "Total quantity in stock"
+          },
+          {
+            "name": "reserved",
+            "type": "int",
+            "default": 0,
+            "doc": "Reserved quantity"
+          },
+          {
+            "name": "available",
+            "type": "int",
+            "doc": "Available quantity for sale"
+          },
+          {
+            "name": "trackInventory",
+            "type": "boolean",
+            "default": true,
+            "doc": "Whether to track inventory for this product"
+          },
+          {
+            "name": "reorderLevel",
+            "type": "int",
+            "default": 0,
+            "doc": "Minimum stock level before reordering"
+          },
+          {
+            "name": "maxStock",
+            "type": "int",
+            "default": 0,
+            "doc": "Maximum stock level"
+          }
+        ]
+      },
+      "doc": "Product inventory information"
+    },
+    {
+      "name": "categories",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "default": [],
+      "doc": "Product categories"
+    },
+    {
+      "name": "tags",
+      "type": {
+        "type": "array",
+        "items": "string"
+      },
+      "default": [],
+      "doc": "Product tags"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "ProductStatus",
+        "symbols": ["ACTIVE", "INACTIVE", "OUT_OF_STOCK", "DISCONTINUED"]
+      },
+      "doc": "Current product status"
+    },
+    {
+      "name": "specifications",
+      "type": {
+        "type": "map",
+        "values": "string"
+      },
+      "default": {},
+      "doc": "Product specifications"
+    },
+    {
+      "name": "createdAt",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Product creation timestamp"
+    },
+    {
+      "name": "updatedAt",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Product last update timestamp"
+    }
+  ]
+}

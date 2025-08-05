@@ -1,0 +1,297 @@
+{
+  "type": "record",
+  "name": "Order",
+  "namespace": "com.example.avro",
+  "doc": "Order entity for Avro serialization",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long",
+      "doc": "Unique order identifier"
+    },
+    {
+      "name": "userId",
+      "type": "long",
+      "doc": "Reference to user who placed the order"
+    },
+    {
+      "name": "orderNumber",
+      "type": "string",
+      "doc": "Human-readable order number"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "OrderStatus",
+        "symbols": ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED", "REFUNDED"]
+      },
+      "doc": "Current order status"
+    },
+    {
+      "name": "items",
+      "type": {
+        "type": "array",
+        "items": {
+          "type": "record",
+          "name": "OrderItem",
+          "fields": [
+            {
+              "name": "productId",
+              "type": "long",
+              "doc": "Reference to product"
+            },
+            {
+              "name": "productName",
+              "type": "string",
+              "doc": "Product name at time of order"
+            },
+            {
+              "name": "productSku",
+              "type": "string",
+              "doc": "Product SKU at time of order"
+            },
+            {
+              "name": "quantity",
+              "type": "int",
+              "doc": "Quantity ordered"
+            },
+            {
+              "name": "unitPrice",
+              "type": {
+                "type": "record",
+                "name": "ItemPrice",
+                "fields": [
+                  {
+                    "name": "currency",
+                    "type": "string"
+                  },
+                  {
+                    "name": "amountCents",
+                    "type": "long"
+                  }
+                ]
+              },
+              "doc": "Unit price at time of order"
+            },
+            {
+              "name": "totalPrice",
+              "type": "ItemPrice",
+              "doc": "Total price for this item"
+            },
+            {
+              "name": "productVariant",
+              "type": {
+                "type": "map",
+                "values": "string"
+              },
+              "default": {},
+              "doc": "Product variant information (size, color, etc.)"
+            }
+          ]
+        }
+      },
+      "doc": "Items in the order"
+    },
+    {
+      "name": "summary",
+      "type": {
+        "type": "record",
+        "name": "OrderSummary",
+        "fields": [
+          {
+            "name": "subtotal",
+            "type": "ItemPrice",
+            "doc": "Subtotal before tax and shipping"
+          },
+          {
+            "name": "tax",
+            "type": "ItemPrice",
+            "doc": "Tax amount"
+          },
+          {
+            "name": "shippingCost",
+            "type": "ItemPrice",
+            "doc": "Shipping cost"
+          },
+          {
+            "name": "discount",
+            "type": "ItemPrice",
+            "doc": "Discount applied"
+          },
+          {
+            "name": "total",
+            "type": "ItemPrice",
+            "doc": "Final total amount"
+          },
+          {
+            "name": "totalItems",
+            "type": "int",
+            "doc": "Total number of items"
+          }
+        ]
+      },
+      "doc": "Order summary information"
+    },
+    {
+      "name": "shippingInfo",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "ShippingInfo",
+          "fields": [
+            {
+              "name": "address",
+              "type": {
+                "type": "record",
+                "name": "ShippingAddress",
+                "fields": [
+                  {
+                    "name": "recipientName",
+                    "type": "string"
+                  },
+                  {
+                    "name": "street",
+                    "type": "string"
+                  },
+                  {
+                    "name": "city",
+                    "type": "string"
+                  },
+                  {
+                    "name": "state",
+                    "type": "string"
+                  },
+                  {
+                    "name": "postalCode",
+                    "type": "string"
+                  },
+                  {
+                    "name": "country",
+                    "type": "string"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "method",
+              "type": "string",
+              "doc": "Shipping method (standard, express, overnight)"
+            },
+            {
+              "name": "trackingNumber",
+              "type": ["null", "string"],
+              "default": null,
+              "doc": "Tracking number"
+            },
+            {
+              "name": "carrier",
+              "type": ["null", "string"],
+              "default": null,
+              "doc": "Shipping carrier (UPS, FedEx, USPS)"
+            },
+            {
+              "name": "cost",
+              "type": "ItemPrice",
+              "doc": "Shipping cost"
+            },
+            {
+              "name": "estimatedDelivery",
+              "type": ["null", {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+              }],
+              "default": null,
+              "doc": "Estimated delivery date"
+            }
+          ]
+        }
+      ],
+      "default": null,
+      "doc": "Shipping information"
+    },
+    {
+      "name": "paymentInfo",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "PaymentInfo",
+          "fields": [
+            {
+              "name": "method",
+              "type": "string",
+              "doc": "Payment method (credit_card, paypal, apple_pay, etc.)"
+            },
+            {
+              "name": "status",
+              "type": {
+                "type": "enum",
+                "name": "PaymentStatus",
+                "symbols": ["PENDING", "AUTHORIZED", "CAPTURED", "FAILED", "REFUNDED"]
+              },
+              "doc": "Payment status"
+            },
+            {
+              "name": "transactionId",
+              "type": ["null", "string"],
+              "default": null,
+              "doc": "Transaction ID from payment processor"
+            },
+            {
+              "name": "amount",
+              "type": "ItemPrice",
+              "doc": "Payment amount"
+            },
+            {
+              "name": "processedAt",
+              "type": ["null", {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+              }],
+              "default": null,
+              "doc": "Payment processing timestamp"
+            }
+          ]
+        }
+      ],
+      "default": null,
+      "doc": "Payment information"
+    },
+    {
+      "name": "createdAt",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Order creation timestamp"
+    },
+    {
+      "name": "updatedAt",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "Order last update timestamp"
+    },
+    {
+      "name": "shippedAt",
+      "type": ["null", {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }],
+      "default": null,
+      "doc": "Order shipped timestamp"
+    },
+    {
+      "name": "deliveredAt",
+      "type": ["null", {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      }],
+      "default": null,
+      "doc": "Order delivered timestamp"
+    }
+  ]
+}

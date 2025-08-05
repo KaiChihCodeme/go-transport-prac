@@ -1,0 +1,130 @@
+{
+  "type": "record",
+  "name": "User",
+  "namespace": "com.example.avro",
+  "doc": "User entity for Avro serialization",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long",
+      "doc": "Unique user identifier"
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "doc": "User email address"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "doc": "User full name"
+    },
+    {
+      "name": "status",
+      "type": {
+        "type": "enum",
+        "name": "UserStatus",
+        "symbols": ["ACTIVE", "INACTIVE", "SUSPENDED", "DELETED"]
+      },
+      "doc": "Current user status"
+    },
+    {
+      "name": "profile",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "Profile",
+          "fields": [
+            {
+              "name": "firstName",
+              "type": "string",
+              "doc": "User first name"
+            },
+            {
+              "name": "lastName", 
+              "type": "string",
+              "doc": "User last name"
+            },
+            {
+              "name": "phone",
+              "type": ["null", "string"],
+              "default": null,
+              "doc": "User phone number"
+            },
+            {
+              "name": "address",
+              "type": [
+                "null",
+                {
+                  "type": "record",
+                  "name": "Address",
+                  "fields": [
+                    {
+                      "name": "street",
+                      "type": "string"
+                    },
+                    {
+                      "name": "city",
+                      "type": "string"
+                    },
+                    {
+                      "name": "state",
+                      "type": "string"
+                    },
+                    {
+                      "name": "postalCode",
+                      "type": "string"
+                    },
+                    {
+                      "name": "country",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "default": null,
+              "doc": "User address"
+            },
+            {
+              "name": "interests",
+              "type": {
+                "type": "array",
+                "items": "string"
+              },
+              "default": [],
+              "doc": "User interests"
+            },
+            {
+              "name": "metadata",
+              "type": {
+                "type": "map",
+                "values": "string"
+              },
+              "default": {},
+              "doc": "Additional user metadata"
+            }
+          ]
+        }
+      ],
+      "default": null,
+      "doc": "User profile information"
+    },
+    {
+      "name": "createdAt",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "User creation timestamp"
+    },
+    {
+      "name": "updatedAt",
+      "type": {
+        "type": "long",
+        "logicalType": "timestamp-millis"
+      },
+      "doc": "User last update timestamp"
+    }
+  ]
+}

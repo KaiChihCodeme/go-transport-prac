@@ -1,0 +1,44 @@
+{
+  "type": "record",
+  "name": "User",
+  "namespace": "com.example.avro",
+  "fields": [
+    {"name": "id", "type": "long"},
+    {"name": "email", "type": "string"},
+    {"name": "name", "type": "string"},
+    {"name": "status", "type": {"type": "enum", "name": "UserStatus", "symbols": ["ACTIVE", "INACTIVE", "SUSPENDED", "DELETED"]}},
+    {"name": "profile", "type": [
+      "null",
+      {
+        "type": "record",
+        "name": "Profile",
+        "fields": [
+          {"name": "firstName", "type": "string"},
+          {"name": "lastName", "type": "string"},
+          {"name": "phone", "type": ["null", "string"]},
+          {"name": "address", "type": [
+            "null",
+            {
+              "type": "record",
+              "name": "Address",
+              "fields": [
+                {"name": "street", "type": "string"},
+                {"name": "city", "type": "string"},
+                {"name": "state", "type": "string"},
+                {"name": "postalCode", "type": "string"},
+                {"name": "country", "type": "string"}
+              ]
+            }
+          ]},
+          {"name": "interests", "type": {"type": "array", "items": "string"}},
+          {"name": "metadata", "type": {"type": "map", "values": "string"}},
+          {"name": "dateOfBirth", "type": ["null", {"type": "long", "logicalType": "timestamp-millis"}], "default": null},
+          {"name": "preferredLanguage", "type": "string", "default": "en"}
+        ]
+      }
+    ]},
+    {"name": "createdAt", "type": {"type": "long", "logicalType": "timestamp-millis"}},
+    {"name": "updatedAt", "type": {"type": "long", "logicalType": "timestamp-millis"}},
+    {"name": "lastLoginAt", "type": ["null", {"type": "long", "logicalType": "timestamp-millis"}], "default": null}
+  ]
+}
